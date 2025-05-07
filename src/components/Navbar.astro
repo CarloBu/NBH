@@ -12,11 +12,9 @@ import OurTeamImg from '../assets/image-8.jpg';
 import LivinImg from '../assets/image-9.jpg';
 import FeedDummyImg from '../assets/image-feed-dummy.jpg';
 
-// Define the AnimatedNavLink component
 const { currentPath } = Astro.props;
 ---
 
-<!-- Fixed layout with logo on left and content on right -->
 <div
 	class="navbar-container fixed top-0 right-0 left-0 z-10 -translate-y-full transform bg-transparent transition-colors duration-200 will-change-transform"
 >
@@ -30,7 +28,6 @@ const { currentPath } = Astro.props;
 
 		<!-- Right side content container -->
 		<div class="flex w-full flex-col">
-			<!-- at top -->
 			<div class="w-full pt-[0.5vw]">
 				<div class="flex items-center justify-end">
 					<div class="mr-[11vw] flex items-center">
@@ -146,7 +143,7 @@ const { currentPath } = Astro.props;
 					</div>
 				</div>
 
-				<!-- About dropdown - using same layout structure -->
+				<!-- About dropdown -->
 				<div id="about-dropdown" class="dropdown-content hidden w-full">
 					<div class="">
 						<div class="">
@@ -181,7 +178,7 @@ const { currentPath } = Astro.props;
 					</div>
 				</div>
 
-				<!-- Feed dropdown - using same layout structure -->
+				<!-- Feed dropdown -->
 				<div id="feed-dropdown" class="dropdown-content hidden w-full">
 					<div class="">
 						<div class="">
@@ -247,24 +244,19 @@ const { currentPath } = Astro.props;
 <script>
 	import { gsap } from 'gsap';
 
-	// Track active dropdowns and their states
 	const activeDropdowns = new Map();
 
-	// Helper function to safely get relatedTarget
 	const getRelatedTarget = (e: Event): Node | null => {
 		return (e as MouseEvent).relatedTarget as Node | null;
 	};
 
-	// Helper function to animate the underline
 	const animateUnderline = (underline: Element, show: boolean) => {
 		if (show) {
-			// Check if already shown to avoid re-animation
 			if (underline.getAttribute('data-animated') === 'true') return;
 
 			gsap.fromTo(underline, { width: 0, left: 0, right: 'auto' }, { width: '100%', duration: 0.3, ease: 'power2.out', overwrite: true });
 			underline.setAttribute('data-animated', 'true');
 		} else {
-			// Reset animation state
 			underline.setAttribute('data-animated', 'false');
 			gsap.to(underline, {
 				width: 0,
@@ -277,7 +269,6 @@ const { currentPath } = Astro.props;
 		}
 	};
 
-	// Function to animate the navbar entry
 	const animateNavbarEntry = () => {
 		const navbar = document.querySelector('.navbar-container');
 
@@ -293,9 +284,7 @@ const { currentPath } = Astro.props;
 		}
 	};
 
-	// Function to initialize the animated nav links
 	const initAnimatedNavLinks = () => {
-		// Only target links with the specific animated-nav-link class
 		const links = document.querySelectorAll('.animated-nav-link');
 		const containers = document.querySelectorAll('.nav-item-container');
 		const navbarContainer = document.querySelector('.navbar-container');
@@ -304,17 +293,14 @@ const { currentPath } = Astro.props;
 			const link = container.querySelector('.animated-nav-link');
 			const underline = link ? link.querySelector('.underline-animation') : null;
 
-			// Only add listeners if both link and underline exist
 			if (link && underline) {
 				container.addEventListener('mouseenter', () => {
 					animateUnderline(underline, true);
 				});
 
 				container.addEventListener('mouseleave', (e) => {
-					// Check if we're moving to the dropdown
 					const dropdownId = link.getAttribute('data-dropdown');
 					if (!dropdownId) {
-						// No dropdown, just hide the underline
 						animateUnderline(underline, false);
 						return;
 					}
@@ -325,14 +311,11 @@ const { currentPath } = Astro.props;
 						return;
 					}
 
-					// Check if we're moving to the dropdown using relatedTarget
 					const relatedTarget = getRelatedTarget(e);
 					if (relatedTarget && (dropdown.contains(relatedTarget) || relatedTarget === dropdown)) {
-						// Moving to the dropdown - don't hide the underline
 						return;
 					}
 
-					// Use a timeout to check if we're still not hovering the dropdown
 					setTimeout(() => {
 						const isOverDropdown = dropdown.matches(':hover');
 						const isOverContainer = container.matches(':hover');
@@ -346,7 +329,6 @@ const { currentPath } = Astro.props;
 		});
 	};
 
-	// Function to initialize dropdown behavior
 	const initDropdowns = () => {
 		const dropdownTriggers = document.querySelectorAll('.dropdown-trigger');
 		const dropdownContents = document.querySelectorAll('.dropdown-content');
@@ -354,12 +336,10 @@ const { currentPath } = Astro.props;
 		const navbarContainer = document.querySelector('.navbar-container');
 		const contactButton = document.querySelector('.contact-button');
 
-		// Hide all dropdowns by default
 		dropdownContents.forEach((content) => {
 			content.classList.add('hidden');
 		});
 
-		// Add hover events to dropdown triggers and their containers
 		dropdownTriggers.forEach((trigger) => {
 			const dropdownId = trigger.getAttribute('data-dropdown');
 			if (!dropdownId) return;
@@ -369,50 +349,39 @@ const { currentPath } = Astro.props;
 
 			const underline = trigger.querySelector('.underline-animation');
 
-			// Get the parent container of this trigger
 			const container = trigger.closest('.nav-item-container');
 			if (!container) return;
 
-			// Set initial animation state
 			if (underline) {
 				underline.setAttribute('data-animated', 'false');
 			}
 
-			// Show dropdown on mouseenter (for both container and trigger)
 			const showDropdown = () => {
-				// Add is-dd class to navbar
 				if (navbarContainer) {
 					navbarContainer.classList.add('is-dd');
 				}
 
-				// Hide all dropdowns first
 				dropdownContents.forEach((content) => {
-					// Hide other dropdowns
 					if (content.id !== dropdownId) {
 						content.classList.add('hidden');
 					}
 				});
 
-				// Show this dropdown
 				dropdown.classList.remove('hidden');
 
-				// Add white background to entire navbar
 				if (navbarContainer) {
 					navbarContainer.classList.add('bg-white');
 
-					// Switch contact button to black for contrast
 					if (contactButton) {
 						contactButton.classList.remove('bg-white', 'text-black');
 						contactButton.classList.add('bg-black', 'text-white');
 					}
 				}
 
-				// Make sure underline is visible
 				if (underline) {
 					animateUnderline(underline, true);
 				}
 
-				// Animate dropdown elements
 				const dropdownItems = dropdown.querySelectorAll('.flex.cursor-pointer');
 				gsap.fromTo(
 					dropdownItems,
@@ -429,40 +398,31 @@ const { currentPath } = Astro.props;
 
 			container.addEventListener('mouseenter', showDropdown);
 
-			// Hide dropdown when mouse leaves navbar - add null check
 			if (navbarContainer) {
 				navbarContainer.addEventListener('mouseleave', () => {
 					dropdown.classList.add('hidden');
 
-					// Remove is-dd class from navbar
 					navbarContainer.classList.remove('is-dd');
 
-					// Remove white background from navbar
 					navbarContainer.classList.remove('bg-white');
 
-					// Reset contact button to white
 					if (contactButton) {
 						contactButton.classList.remove('bg-black', 'text-white');
 						contactButton.classList.add('bg-white', 'text-black');
 					}
 
-					// Hide underline when leaving entire navbar
 					if (underline) {
 						animateUnderline(underline, false);
 					}
 				});
 			}
 
-			// Hide dropdown when mouse leaves the container
 			container.addEventListener('mouseleave', (e) => {
-				// Check if we're moving to the dropdown using relatedTarget
 				const relatedTarget = getRelatedTarget(e);
 				if (relatedTarget && (dropdown.contains(relatedTarget) || relatedTarget === dropdown)) {
-					// Moving to the dropdown - don't hide anything
 					return;
 				}
 
-				// Use setTimeout to allow checking if mouse moved to dropdown
 				setTimeout(() => {
 					const isOverDropdown = dropdown.matches(':hover');
 					const isOverContainer = container.matches(':hover');
@@ -470,23 +430,19 @@ const { currentPath } = Astro.props;
 					if (!isOverDropdown && !isOverContainer) {
 						dropdown.classList.add('hidden');
 
-						// Remove is-dd class if all dropdowns are closed
 						if (navbarContainer && !anyDropdownVisible()) {
 							navbarContainer.classList.remove('is-dd');
 						}
 
-						// Remove white background if all dropdowns are closed
 						if (navbarContainer && !anyDropdownVisible()) {
 							navbarContainer.classList.remove('bg-white');
 
-							// Reset contact button to white
 							if (contactButton) {
 								contactButton.classList.remove('bg-black', 'text-white');
 								contactButton.classList.add('bg-white', 'text-black');
 							}
 						}
 
-						// Hide underline only if not hovering dropdown
 						if (!isOverDropdown && underline) {
 							animateUnderline(underline, false);
 						}
@@ -495,24 +451,20 @@ const { currentPath } = Astro.props;
 			});
 		});
 
-		// Keep dropdown visible when hovering over it
 		dropdownContents.forEach((content) => {
 			content.addEventListener('mouseenter', (e) => {
 				content.classList.remove('hidden');
 
-				// Make sure navbar background is white
 				if (navbarContainer) {
 					navbarContainer.classList.add('bg-white');
 					navbarContainer.classList.add('is-dd');
 
-					// Switch contact button to black for contrast
 					if (contactButton) {
 						contactButton.classList.remove('bg-white', 'text-black');
 						contactButton.classList.add('bg-black', 'text-white');
 					}
 				}
 
-				// Keep the parent link's underline visible
 				const contentId = content.id;
 				const relatedTrigger = document.querySelector(`.dropdown-trigger[data-dropdown="${contentId}"]`);
 				const underline = relatedTrigger ? relatedTrigger.querySelector('.underline-animation') : null;
@@ -523,43 +475,35 @@ const { currentPath } = Astro.props;
 			});
 
 			content.addEventListener('mouseleave', (e) => {
-				// Check if the mouse moved back to the trigger's container
 				const contentId = content.id;
 				const relatedTrigger = document.querySelector(`.dropdown-trigger[data-dropdown="${contentId}"]`);
 				const relatedContainer = relatedTrigger ? relatedTrigger.closest('.nav-item-container') : null;
 				const underline = relatedTrigger ? relatedTrigger.querySelector('.underline-animation') : null;
 
-				// Check if we're moving to the container using relatedTarget
 				const relatedTarget = getRelatedTarget(e);
 				if (relatedTarget && relatedContainer && (relatedContainer.contains(relatedTarget) || relatedTarget === relatedContainer)) {
-					// Moving to the container - don't hide anything
 					return;
 				}
 
-				// Use setTimeout to allow checking if mouse moved to container
 				setTimeout(() => {
 					const isOverRelatedContainer = relatedContainer && relatedContainer.matches(':hover');
 
 					if (!isOverRelatedContainer) {
 						content.classList.add('hidden');
 
-						// Remove is-dd class if all dropdowns are closed
 						if (navbarContainer && !anyDropdownVisible()) {
 							navbarContainer.classList.remove('is-dd');
 						}
 
-						// Remove white background if all dropdowns are closed
 						if (navbarContainer && !anyDropdownVisible()) {
 							navbarContainer.classList.remove('bg-white');
 
-							// Reset contact button to white
 							if (contactButton) {
 								contactButton.classList.remove('bg-black', 'text-white');
 								contactButton.classList.add('bg-white', 'text-black');
 							}
 						}
 
-						// Hide the underline if not hovering the related container
 						if (underline) {
 							animateUnderline(underline, false);
 						}
@@ -568,7 +512,6 @@ const { currentPath } = Astro.props;
 			});
 		});
 
-		// Helper function to check if any dropdown is visible
 		function anyDropdownVisible() {
 			let visible = false;
 			dropdownContents.forEach((content) => {
@@ -580,18 +523,14 @@ const { currentPath } = Astro.props;
 		}
 	};
 
-	// Initialize animations when the DOM is loaded
 	document.addEventListener('DOMContentLoaded', () => {
-		// Animate the navbar entry
 		animateNavbarEntry();
 
 		initAnimatedNavLinks();
 		initDropdowns();
 	});
 
-	// Also reinitialize when the document becomes visible (for view transitions)
 	document.addEventListener('astro:page-load', () => {
-		// Animate the navbar entry
 		animateNavbarEntry();
 
 		initAnimatedNavLinks();
