@@ -1,0 +1,21 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import NeighbourhoodLogo from '../assets/neighbourhood-logo.svg';
+import MarketingImg from '../assets/image-1.jpg';
+import SalesImg from '../assets/image-2.jpg';
+import WebsitesImg from '../assets/image-3.jpg';
+import CustomerServiceImg from '../assets/image-4.jpg';
+import PaidMediaImg from '../assets/image-5.jpg';
+import HubspotImg from '../assets/image-6.jpg';
+import Background from '../assets/background.jpg';
+---
+
+<Layout>
+	<section class="relative min-h-screen pt-48">
+		<!-- Hero Background -->
+		<div class="absolute inset-0 z-0">
+			<Image src={Background} alt="Beach background" class="h-full w-full object-cover" />
+		</div>
+	</section>
+</Layout>

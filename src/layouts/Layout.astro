@@ -1,0 +1,73 @@
+---
+import { getEntry } from 'astro:content';
+import { ClientRouter } from 'astro:transitions';
+import '@/styles/global.css';
+import Navbar from '../components/Navbar.astro';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<ClientRouter />
+		<title>Astro Basics</title>
+	</head>
+	<body class="text-light-text">
+		<div id="vtOverlay" class="bg-light-bg pointer-events-none fixed inset-0 z-40 opacity-0 transition-opacity duration-500" transition:persist></div>
+		<Navbar />
+		<div id="smooth-wrapper">
+			<div id="smooth-content">
+				<div class="">
+					<slot />
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
+
+<style>
+	/* Google Fonts - Inter */
+	@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap');
+
+	html,
+	body {
+		margin: 0;
+		width: 100%;
+		height: 100%;
+	}
+
+	/* View Transition Styles */
+	::view-transition-old(root),
+	::view-transition-new(root) {
+		animation: none;
+		mix-blend-mode: normal;
+	}
+
+	/* Animation for the overlay */
+	@keyframes fadeIn {
+		from {
+			opacity: 0;
+		}
+		to {
+			opacity: 1;
+		}
+	}
+
+	@keyframes fadeOut {
+		from {
+			opacity: 1;
+		}
+		to {
+			opacity: 0;
+		}
+	}
+
+	/* Script for controlling the overlay */
+	:global(html.astro-page-loading:is([data-astro-transition='view-transition'])) #vtOverlay {
+		opacity: 1;
+		animation: fadeIn 500ms forwards;
+	}
+</style>
